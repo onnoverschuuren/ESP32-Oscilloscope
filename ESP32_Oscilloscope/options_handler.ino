@@ -1,4 +1,5 @@
-int voltage_division[6] = { //screen has 4 divisions, 31 pixels each (125 pixels of height)
+int voltage_division[7] = { //screen has 6 divisions, 31 pixels each (125 pixels of height)
+  825,
   550, //fullscreen 3.3V peak-peak
   500,
   375,
@@ -12,7 +13,7 @@ int voltage_division[6] = { //screen has 4 divisions, 31 pixels each (125 pixels
    thus, the time division is the number
    of samples per screen division
 */
-float time_division[9] = { //screen has 4 divisions, 60 pixel each (240 pixel of width)
+float time_division[9] = { //screen has 6 divisions, 40 pixel each (320 pixel of width)
   10,
   25,
   50,
@@ -31,278 +32,290 @@ float time_division[9] = { //screen has 4 divisions, 60 pixel each (240 pixel of
 //};
 
 void menu_handler() {
-  button();
+	button();
 }
 
 void button() {
-  if ( btnok == 1 || btnbk == 1 || btnpl == 1 || btnmn == 1)
-  {
-    menu_action = true;
-  }
-  if (menu == true)
-  {
-    if (set_value) {
-      switch (opt) {
-        case Vdiv:
-          if (btnpl == 1) {
-            volts_index++;
-            if (volts_index >= sizeof(voltage_division) / sizeof(*voltage_division)) {
-              volts_index = 0;
-            }
-            btnpl = 0;
-          }
-          else if (btnmn == 1) {
-            volts_index--;
-            if (volts_index < 0) {
-              volts_index = sizeof(voltage_division) / sizeof(*voltage_division) - 1;
-            }
-            btnmn = 0;
-          }
+	if (btnok == 1 || btnbk == 1 || btnpl == 1 || btnmn == 1)
+	{
+		menu_action = true;
+	}
+	if (menu == true)
+	{
+		if (set_value) {
+			switch (opt) {
+			case Vdiv:
+				if (btnpl == 1) {
+					volts_index++;
+					if (volts_index >= sizeof(voltage_division) / sizeof(*voltage_division)) {
+						volts_index = 0;
+					}
+					btnpl = 0;
+				}
+				else if (btnmn == 1) {
+					volts_index--;
+					if (volts_index < 0) {
+						volts_index = sizeof(voltage_division) / sizeof(*voltage_division) - 1;
+					}
+					btnmn = 0;
+				}
 
-          v_div = voltage_division[volts_index];
-          break;
+				v_div = voltage_division[volts_index];
+				break;
 
-        case Sdiv:
-          if (btnmn == 1) {
-            tscale_index++;
-            if (tscale_index >= sizeof(time_division) / sizeof(*time_division)) {
-              tscale_index = 0;
-            }
-            btnmn = 0;
-          }
-          else if (btnpl == 1) {
-            tscale_index--;
-            if (tscale_index < 0) {
-              tscale_index = sizeof(time_division) / sizeof(*time_division) - 1;
-            }
-            btnpl = 0;
-          }
+			case Sdiv:
+				if (btnmn == 1) {
+					tscale_index++;
+					if (tscale_index >= sizeof(time_division) / sizeof(*time_division)) {
+						tscale_index = 0;
+					}
+					btnmn = 0;
+				}
+				else if (btnpl == 1) {
+					tscale_index--;
+					if (tscale_index < 0) {
+						tscale_index = sizeof(time_division) / sizeof(*time_division) - 1;
+					}
+					btnpl = 0;
+				}
 
-          s_div = time_division[tscale_index];
-          break;
+				s_div = time_division[tscale_index];
+				break;
 
-        case Offset:
-          if (btnmn == 1) {
-            offset += 0.1 * (v_div * 4) / 3300;
-            btnmn = 0;
-          }
-          else if (btnpl == 1) {
-            offset -= 0.1 * (v_div * 4) / 3300;
-            btnpl = 0;
-          }
+			case Offset:
+				if (btnmn == 1) {
+					offset += 0.1 * (v_div * 4) / 3300;
+					btnmn = 0;
+				}
+				else if (btnpl == 1) {
+					offset -= 0.1 * (v_div * 4) / 3300;
+					btnpl = 0;
+				}
 
-          if (offset > 3.3)
-            offset = 3.3;
-          if (offset < -3.3)
-            offset = -3.3;
+				if (offset > 3.3)
+					offset = 3.3;
+				if (offset < -3.3)
+					offset = -3.3;
 
-          break;
+				break;
 
-        case TOffset:
-          if (btnpl == 1)
-          {
-            toffset += 0.1 * s_div;
-            btnpl = 0;
-          }
-          else if (btnmn == 1)
-          {
-            toffset -= 0.1 * s_div;
-            btnmn = 0;
-          }
+			case TOffset:
+				if (btnpl == 1)
+				{
+					toffset += 0.1 * s_div;
+					btnpl = 0;
+				}
+				else if (btnmn == 1)
+				{
+					toffset -= 0.1 * s_div;
+					btnmn = 0;
+				}
 
-          break;
+				break;
 
-        default:
-          break;
+			default:
+				break;
 
-      }
-      if (btnbk == 1)
-      {
-        set_value = 0;
-        btnbk = 0;
-      }
-    }
-    else
-    {
-      if (btnpl == 1)
-      {
-        opt++;
-        if (opt > Single)
-        {
-          opt = 1;
-        }
-        Serial.print("option : ");
-        Serial.println(opt);
-        btnpl = 0;
-      }
-      if (btnmn == 1)
-      {
-        opt--;
-        if (opt < 1)
-        {
-          opt = 9;
-        }
-        Serial.print("option : ");
-        Serial.println(opt);
-        btnmn = 0;
-      }
-      if (btnbk == 1)
-      {
-        hide_menu();
-        btnbk = 0;
-      }
-      if (btnok == 1) {
-        switch (opt) {
-          case Autoscale:
-            auto_scale = !auto_scale;
-            break;
+			}
+			if (btnbk == 1)
+			{
+				set_value = 0;
+				btnbk = 0;
+			}
+		}
+		else
+		{
+			if (btnpl == 1)
+			{
+				opt++;
+				if (opt > Clear)
+				{
+					opt = 1;
+				}
+				Serial.print("option : ");
+				Serial.println(opt);
+				btnpl = 0;
+			}
+			if (btnmn == 1)
+			{
+				opt--;
+				if (opt < 1)
+				{
+					opt = Clear;
+				}
+				Serial.print("option : ");
+				Serial.println(opt);
+				btnmn = 0;
+			}
+			if (btnbk == 1)
+			{
+				hide_menu();
+				btnbk = 0;
+			}
+			if (btnok == 1) {
+				switch (opt) {
+				case Autoscale:
+					auto_scale = !auto_scale;
+					break;
 
-          case Vdiv:
-            set_value = true;
-            break;
+				case Vdiv:
+					set_value = true;
+					break;
 
-          case Sdiv:
-            set_value = true;
-            break;
+				case Sdiv:
+					set_value = true;
+					break;
 
-          case Offset:
-            set_value = true;
-            break;
+				case Offset:
+					set_value = true;
+					break;
 
-          case Stop:
-            stop = !stop;
-            //Serial.print("Stop : ");
-            //Serial.println(stop);
-            set_value = false;
-            break;
+				case TOffset:
+					set_value = true;
+					//set_value = false;
+					break;
 
-          case TOffset:
-            set_value = true;
-            //set_value = false;
-            break;
+				case Filter:
+					current_filter++;
+					if (current_filter > 3)
+						current_filter = 0;
+					break;
 
-          case Single:
-            single_trigger = true;
-            set_value = false;
-            break;
+				case Stop:
+					stop = !stop;
+					//Serial.print("Stop : ");
+					//Serial.println(stop);
+					set_value = false;
+					break;
 
-          case Reset:
-            offset = 0;
-            v_div = 550;
-            s_div = 10;
-            tscale_index = 0;
-            volts_index = 0;
-            break;
+				case Mode:
+					digital_wave_option++;
+					if (digital_wave_option > 2)
+						digital_wave_option = 0;
+					break;
 
-          case Probe:
-            break;
+				case Single:
+					single_trigger = true;
+					set_value = false;
+					break;
 
-          case Mode:
-            digital_wave_option++;
-            if (digital_wave_option > 2)
-              digital_wave_option = 0;
-            break;
+				case Reset:
+					v_div = 825;
+					s_div = 10;
+					offset = -1.65;
+					volts_index = 0;
+					tscale_index = 0;
+					toffset = 0;
+					stop = false;
+					auto_scale = true;
+					set_value = false;
+					digital_wave_option = 0;
+					current_filter = 0;
+					full_pix = true;
 
-          case Filter:
-            current_filter++;
-            if (current_filter > 3)
-              current_filter = 0;
-            break;
+				break;
 
-          default:
-            break;
+				case Clear:
+					break;
 
-        }
+				case Probe:
+					break;
 
-        btnok = 0;
-      }
-    }
-  }
-  else
-  {
-    if (btnok == 1)
-    {
-      opt = 1;
-      show_menu();
-      btnok = 0;
-    }
-    if (btnbk == 1)
-    {
-      if (info == true)
-      {
-        hide_all();
-      }
-      else
-      {
-        info = true;
-      }
-      btnbk = 0;
-    }
-    if (btnpl == 1) {
-      volts_index++;
-      if (volts_index >= sizeof(voltage_division) / sizeof(*voltage_division)) {
-        volts_index = 0;
-      }
-      btnpl = 0;
-      v_div = voltage_division[volts_index];
-    }
-    if (btnmn == 1) {
-      tscale_index++;
-      if (tscale_index >= sizeof(time_division) / sizeof(*time_division)) {
-        tscale_index = 0;
-      }
-      btnmn = 0;
-      s_div = time_division[tscale_index];
-    }
-  }
+				default:
+					break;
+
+				}
+
+				btnok = 0;
+			}
+		}
+	}
+	else
+	{
+		if (btnok == 1)
+		{
+			opt = 1;
+			show_menu();
+			btnok = 0;
+		}
+		if (btnbk == 1)
+		{
+			if (info == true)
+			{
+				hide_all();
+				full_pix = !full_pix;
+			}
+			else
+			{
+				info = true;
+			}
+			btnbk = 0;
+		}
+		if (btnpl == 1) {
+			volts_index++;
+			if (volts_index >= sizeof(voltage_division) / sizeof(*voltage_division)) {
+				volts_index = 0;
+			}
+			btnpl = 0;
+			v_div = voltage_division[volts_index];
+		}
+		if (btnmn == 1) {
+			tscale_index++;
+			if (tscale_index >= sizeof(time_division) / sizeof(*time_division)) {
+				tscale_index = 0;
+			}
+			btnmn = 0;
+			s_div = time_division[tscale_index];
+		}
+	}
 
 }
 
 void hide_menu() {
-  menu = false;
+	menu = false;
 }
 
 void hide_all() {
-  menu = false;
-  info = false;
+	menu = false;
+	info = false;
 }
 
 void show_menu() {
-  menu = true;
+	menu = true;
 }
 
 String strings_vdiv() {
-  return "";
+	return "";
 }
 
 String strings_sdiv() {
-  return "";
+	return "";
 }
 
 String strings_offset() {
-  return "";
+	return "";
 }
 
 String strings_toffset() {
-  return "";
+	return "";
 }
 
 String strings_freq() {
-  return "";
+	return "";
 }
 
 String strings_peak() {
-  return "";
+	return "";
 }
 
 String strings_vmax() {
-  return "";
+	return "";
 }
 
 String strings_vmin() {
-  return "";
+	return "";
 }
 
 String strings_filter() {
-  return "";
+	return "";
 }

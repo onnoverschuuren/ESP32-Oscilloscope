@@ -1,3 +1,5 @@
+#define MyPortMAX_DELAY ( TickType_t ) 0xffffffffUL
+
 void configure_i2s(int rate) {
   /*keep in mind:
      dma_buf_len * dma_buf_count * bits_per_sample/8 > 4096
@@ -24,9 +26,10 @@ void configure_i2s(int rate) {
 }
 
 void ADC_Sampling(uint16_t *i2s_buff){
+  size_t bytes_read;
   for (int i = 0; i < B_MULT; i++) {
     //TODO i2s_read_bytes is deprecated, replace with new function
-    i2s_read_bytes(I2S_NUM_0, (char*)&i2s_buff[i * NUM_SAMPLES],  NUM_SAMPLES * sizeof(uint16_t), portMAX_DELAY);    
+    i2s_read(I2S_NUM_0, (char*)&i2s_buff[i * NUM_SAMPLES],  NUM_SAMPLES * sizeof(uint16_t),  &bytes_read, MyPortMAX_DELAY);
   }
 }
 
