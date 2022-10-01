@@ -160,7 +160,7 @@ void draw_sprite(float freq,
 		spr.drawLine(0, 120, 319, 120, TFT_WHITE); //center line
 		spr.fillRect(shift, 0, 160, 215, TFT_BLACK);
 		spr.drawRect(shift, 0, 160, 215, TFT_WHITE);
-		spr.fillRect(shift + 1, 2 + 15 * (opt - 1), 158, 16, selectkleur);
+		spr.fillRect(shift + 1, 3 + 15 * (opt - 1), 158, 16, selectkleur);
 		spr.setTextColor(TFT_WHITE, (opt == Autoscale) ? selectkleur : TFT_BLACK);
 		spr.drawString("AUTOSCALE " + String(auto_scale ? "ON" : "OFF"), shift + 5, 3);
 		spr.setTextColor(TFT_WHITE, (opt == Vdiv) ? selectkleur : TFT_BLACK);

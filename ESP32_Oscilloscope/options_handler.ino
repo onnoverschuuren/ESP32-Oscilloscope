@@ -212,13 +212,6 @@ void button() {
 					digital_wave_option = 0;
 					current_filter = 0;
 					full_pix = true;
-
-				break;
-
-				case Clear:
-					break;
-
-				case Probe:
 					break;
 
 				default:
