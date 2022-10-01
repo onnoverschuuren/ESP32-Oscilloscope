@@ -128,7 +128,7 @@ void button() {
 			if (btnpl == 1)
 			{
 				opt++;
-				if (opt > Clear)
+				if (opt > Reset)
 				{
 					opt = 1;
 				}
@@ -141,7 +141,7 @@ void button() {
 				opt--;
 				if (opt < 1)
 				{
-					opt = Clear;
+					opt = Reset;
 				}
 				Serial.print("option : ");
 				Serial.println(opt);
