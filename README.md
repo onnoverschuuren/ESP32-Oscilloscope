@@ -18,3 +18,4 @@ The Oscilloscope is a must-have test instrument for any electronics engineer. It
 [Note: As this projects are very simple we are only providing the code, schemaitic, and a few essential images if you want to get the images or code explanations do check out the Circuit Digest website.
 <br>
 <br>
+Tweaked for LILYGO® TTGO T4 V1.3 ILI9341 2.4 Inch Lcd by Onno Verschuuren
